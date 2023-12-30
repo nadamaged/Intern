@@ -1,18 +1,25 @@
-import "./App.css";
 import React from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import Table from "./component/Table/Table";
+import Home from "./pages/Home/Home";
 
-
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  uri: "https://countries.trevorblades.com",
-});
+import "./App.css";
 
 function App() {
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: "http://localhost:5000/",
+  });
+
   return (
     <ApolloProvider client={client}>
-      <Table/>
+      {/* <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/test" element={<Test />} />
+          </Routes>
+        </div>
+      </Router> */} <Home />
     </ApolloProvider>
   );
 }

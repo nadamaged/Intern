@@ -1,0 +1,51 @@
+export const students = [
+    {
+        id: 1,
+        name: "Rehab Doe",
+        phone: "123-456-7890",
+        email: "john.doe@example.com",
+        dateJoined: "2023-01-01",
+    },
+    {
+        id: 2,
+        name: "Jane Smith",
+        phone: "987-654-3210",
+        email: "jane.smith@example.com",
+        dateJoined: "2023-02-15",
+    },
+    {
+        id: 3,
+        name: "Bob Johnson",
+        phone: "555-123-4567",
+        email: "bob.johnson@example.com",
+        dateJoined: "2023-03-10",
+    },
+    {
+        id: 4,
+        name: "rehab",
+        phone: "555-333-4567",
+        email: "rehab.johnson@example.com",
+        dateJoined: "2023-03-11",
+    },
+    {
+        id: 5,
+        name: "Muhammad",
+        phone: "511-333-4567",
+        email: "muhammad.johnson@example.com",
+        dateJoined: "2023-03-12",
+    },
+    {
+        id: 6,
+        name: "nada",
+        phone: "522-333-4567",
+        email: "nada.johnson@example.com",
+        dateJoined: "2023-03-13",
+    },
+    {
+        id: 7,
+        name: "esraa",
+        phone: "533-333-4567",
+        email: "esraa.johnson@example.com",
+        dateJoined: "2023-03-14",
+    },
+];
