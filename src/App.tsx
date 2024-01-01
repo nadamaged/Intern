@@ -12,7 +12,8 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Home />
+ <Home />
+      
     </ApolloProvider>
   );
 }
