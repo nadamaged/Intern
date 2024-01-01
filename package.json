@@ -22,6 +22,7 @@
     "heroicons": "^2.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-paginate": "^8.2.0",
     "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
     "tailwindcss": "^3.4.0",
@@ -33,7 +34,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "json-server-gql": "json-graphql-server db.cjs --p 5000"
+
+    "json-server-gql": "json-graphql-server data.js --p 5002"
+
   },
   "eslintConfig": {
     "extends": [
