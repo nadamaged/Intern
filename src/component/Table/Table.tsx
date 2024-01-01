@@ -1,26 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 
-interface Student {
+export interface Student {
   id: string;
   name: string;
   email: string;
   phone: string;
-  dateJoined: string;
+  // Add other fields if needed
 }
 
 interface TableProps {
-  Students: Student[]; // Update the interface name here
+  students: Student[];
+  onDelete: (studentId: string) => void;
+  onUpdate: (updatedData: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  }) => void;
 }
 
-const Table: React.FC<TableProps> = ({ Students }) => {
-  if (!Students || Students.length === 0) {
-    return <p>No data available</p>;
-  }
+const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    id: "",
+    name: "",
+    email: "",
+    phone: "",
+  });
+
+  const handleEditClick = (student: Student) => {
+    setEditData({
+      id: student.id,
+      name: student.name,
+      email: student.email,
+      phone: student.phone,
+    });
+    setIsEditing(true);
+  };
+
+  const handleUpdate = () => {
+    onUpdate(editData);
+    setIsEditing(false);
+    setEditData({
+      id: "",
+      name: "",
+      email: "",
+      phone: "",
+    });
+  };
 
   // Exclude the "__typename" field from the columns
-  const columns = Object.keys(Students[0]).filter(
+  const columns = Object.keys(students[0]).filter(
     (column) => column !== "__typename"
-  );
+  ) as (keyof Student)[];
 
   return (
     <div className="overflow-x-auto">
@@ -35,38 +67,108 @@ const Table: React.FC<TableProps> = ({ Students }) => {
                 {column}
               </th>
             ))}
+            <th className="py-2 px-4 border-b border-gray-300 font-semibold text-sm text-gray-700">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
-          {Students.map((Student: any) => (
-            <tr key={Student.id} className="hover:bg-gray-50">
+          {students.map((student) => (
+            <tr key={student.id} className="hover:bg-gray-50">
               {columns.map((column) => (
                 <td
                   key={column}
                   className="py-3 px-4 border-b border-gray-300 text-sm"
                 >
-                  {Student[column]}
+                  {student[column]}
                 </td>
               ))}
+              <td className="py-3 px-4 border-b border-gray-300 text-sm">
+                <button
+                  onClick={() => onDelete(student.id)}
+                  className="text-red-500"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => handleEditClick(student)}
+                  className="ml-2 text-blue-500"
+                >
+                  Edit
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {isEditing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
+          <div className="bg-white p-8 rounded-lg z-10 max-w-md w-full">
+            <h2 className="text-2xl font-semibold mb-4">Edit Student</h2>
+            <div className="mb-4">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name:
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={editData.name}
+                onChange={(e) =>
+                  setEditData({ ...editData, name: e.target.value })
+                }
+                className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email:
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={editData.email}
+                onChange={(e) =>
+                  setEditData({ ...editData, email: e.target.value })
+                }
+                className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Phone:
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={editData.phone}
+                onChange={(e) =>
+                  setEditData({ ...editData, phone: e.target.value })
+                }
+                className="mt-1 p-2 border rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Table;
-
-// import React from "react";
-
-// interface TableProps {
-//   Students: TestStudent[]; // Update the interface name here
-// }
-
-// const Table: React.FC<TableProps> = ({ Students }) => {
-//   // Your table component code here
-//   return <div>Your table component</div>;
-// };
-
-// export default Table;
