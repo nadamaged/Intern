@@ -1,6 +1,6 @@
 import React from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import Home from "./pages/Home/Home";
+import {Home} from "./pages/Home/Home";
 import SideBar from "./component/SideBar";
 import Profile from "./component/Profile";
 

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import DeletePopup from "../DeletePopup";
+
 
 export interface Student {
   id: string;
@@ -61,6 +63,26 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
     (column) => column !== "__typename"
   ) as (keyof Student)[];
 
+
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
+    null
+  );
+
+  const handleDeleteClick = (studentId: string) => {
+    setSelectedStudentId(studentId);
+    setShowDeletePopup(true);
+  };
+
+  const handleDeletePopupClose = () => {
+    setSelectedStudentId(null);
+    setShowDeletePopup(false);
+  };
+
+  const handleDelete = () => {
+    handleDeletePopupClose();
+  };
+
   return (
     <>
       <div className=" overflow-x-auto">
@@ -95,26 +117,24 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                           .map((tag: string, index: number) => (
                             <span
                               key={index}
-                              className={`${
-                                tag.trim() === "football"
+                              className={`${tag.trim() === "football"
                                   ? "bg-green-100 text-light-green-800 rounded-full px-2"
                                   : ""
-                              } ${
-                                tag.trim() === "supplay ch"
+                                } ${tag.trim() === "supplay ch"
                                   ? "bg-pink-100 text-light-pink-800 rounded-full px-2"
                                   : ""
-                              }`}
+                                }`}
                             >
                               {tag.trim()}
                             </span>
                           ))}
                       </div>
                     ) : // Check for "name" column and apply styles accordingly
-                    column === "name" ? (
-                      <span className="text-black ">{student[column]}</span>
-                    ) : (
-                      student[column]
-                    )}
+                      column === "name" ? (
+                        <span className="text-black ">{student[column]}</span>
+                      ) : (
+                        student[column]
+                      )}
                   </td>
                 ))}
                 <td className="px-4 py-2 whitespace-nowrap">
@@ -126,7 +146,7 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                   </button>
 
                   <button
-                    onClick={() => onDelete(student.id)}
+                    onClick={() => handleDeleteClick(student.id)}
                     className="text-red-500 mr-2"
                   >
                     Delete
@@ -155,9 +175,8 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
               <button
                 key={number}
                 onClick={() => setCurrentPage(number)}
-                className={`${
-                  currentPage === number ? "text-white" : "text-gray-500"
-                } hover:bg-gray-200 hover:text-gray-700 font-bold py-2 px-4 rounded cursor-pointer`}
+                className={`${currentPage === number ? "text-white" : "text-gray-500"
+                  } hover:bg-gray-200 hover:text-gray-700 font-bold py-2 px-4 rounded cursor-pointer`}
               >
                 {number}
               </button>
@@ -178,6 +197,18 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
         </div>
       </div>
       {/* ////////////////////////////////////////////////////////////////////////////// */}
+
+            {/* delete */}
+            {showDeletePopup && (
+        <DeletePopup
+          studentId={selectedStudentId || ""}
+          onClose={handleDeletePopupClose}
+          onDelete={handleDelete}
+        />
+      )}
+      {/* delete */}
+
+
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-gray-900 opacity-75"></div>

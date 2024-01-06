@@ -2,6 +2,7 @@ import React, { FC, ReactElement } from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import Table, { Student } from "../../component/Table/Table";
 
+
 const QUERY_LIST_OF_STUDENTS = gql`
   query {
     allStudents {
@@ -125,4 +126,5 @@ const Home: FC<HomeProps> = (): ReactElement => {
   );
 };
 
-export default Home;
+
+export { Home, MUTATION_DELETE_STUDENT };
