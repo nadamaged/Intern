@@ -110,23 +110,17 @@ const Home: FC<HomeProps> = (): ReactElement => {
       console.error(error);
     }
   };
-
   return (
-    <div className="listOfCountries">
-      <div className="home">
-        <div className="title">
-          <h1>List Of Student</h1>
-        </div>
-        {loading && <h3>Data is loading...</h3>}
-        {error && <h3>{error.message}</h3>}
-        {data && (
-          <Table
-            students={data.allStudents}
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
-          />
-        )}
-      </div>
+    <div>
+      {loading && <h3>Data is loading...</h3>}
+      {error && <h3>{error.message}</h3>}
+      {data && (
+        <Table
+          students={data.allStudents}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+        />
+      )}
     </div>
   );
 };
