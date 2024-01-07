@@ -67,8 +67,8 @@ const SideBar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#00629D] overflow-hidden px-3 py-10 w-full">
-      <div className="flex items-center ">
+    <div className="bg-[#00629D] h-screen">
+      <div className="flex items-center px-3 pt-9 pb-9">
         <img src={pic} alt="logo" className="w-14 h-12 mb-4 flex " />
         <p className="px-3 text-white font-bold text-2xl">Admin Panal</p>
       </div>
@@ -78,4 +78,4 @@ const SideBar: React.FC = () => {
   );
 };
 
-export default SideBar;
+export default SideBar

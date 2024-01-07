@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import DeletePopup from "../DeletePopup";
 
-
 export interface Student {
   id: string;
   name: string;
@@ -63,7 +62,6 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
     (column) => column !== "__typename"
   ) as (keyof Student)[];
 
-
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
     null
@@ -92,12 +90,12 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
               {columns.map((column) => (
                 <th
                   key={column}
-                  className="px-4 py-2 text-sm font-semibold  text-gray-500 uppercase"
+                  className="px-4 py-1 text-sm font-semibold  text-gray-500 uppercase"
                 >
                   {column}
                 </th>
               ))}
-              <th className="px-4 py-2 text-sm font-semibold  text-gray-500 uppercase">
+              <th className="px-4 pt-2 pb-2 text-sm font-semibold  text-gray-500 uppercase">
                 Actions
               </th>
             </tr>
@@ -108,7 +106,7 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                 {columns.map((column) => (
                   <td
                     key={column}
-                    className="px-4 py-2 whitespace-nowrap text-gray-500"
+                    className="px-3 pt-0 pb-3 whitespace-nowrap text-gray-500"
                   >
                     {isTagsColumn(column) && Array.isArray(student[column]) ? (
                       <div>
@@ -131,13 +129,15 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                       </div>
                     ) : // Check for "name" column and apply styles accordingly
                       column === "name" ? (
-                        <span className="text-black ">{student[column]}</span>
+                        <span className="text-black font-semibold">
+                          {student[column]}
+                        </span>
                       ) : (
                         student[column]
                       )}
                   </td>
                 ))}
-                <td className="px-4 py-2 whitespace-nowrap">
+                <td className="px-4 pt-0 pb-2 whitespace-nowrap">
                   <button
                     onClick={() => handleEditClick(student)}
                     className="text-blue-500 mr-3"
@@ -157,49 +157,113 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
           </tbody>
         </table>
         {/* pagination */}
-        <div className="flex justify-center items-center mt-4">
-          <button
-            onClick={() =>
-              setCurrentPage((prevPage) =>
-                prevPage > 1 ? prevPage - 1 : prevPage
-              )
-            }
-            disabled={currentPage === 1}
-            className="text-gray-500 font-bold py-2 px-4 rounded cursor-pointer"
-          >
-            Previous
-          </button>
-
-          <div className="flex space-x-2 items-center text-gray-500 font-bold">
-            {pageNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => setCurrentPage(number)}
-                className={`${currentPage === number ? "text-white" : "text-gray-500"
-                  } hover:bg-gray-200 hover:text-gray-700 font-bold py-2 px-4 rounded cursor-pointer`}
+        <div className="flex items-center justify-center pt-0 pb-0 lg:px-0 sm:px-4 px-4 fixed bottom-0 right-0 w-4/5 bg-white p-0">
+          <div className="lg:w-5/5 w-full  flex items-center justify-between border-t border-gray-200 ">
+            <div className="flex items-center py-3 px-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <svg
+                width="14"
+                height="8"
+                viewBox="0 0 11 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {number}
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  stroke-width="1.55"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1.1665 4L4.49984 7.33333"
+                  stroke="currentColor"
+                  stroke-width="1.35"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M1.1665 4.00002L4.49984 0.666687"
+                  stroke="currentColor"
+                  stroke-width="1.55"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <button
+                onClick={() =>
+                  setCurrentPage((prevPage) =>
+                    prevPage > 1 ? prevPage - 1 : prevPage
+                  )
+                }
+                disabled={currentPage === 1}
+                className="text-gray-500 font-bold py-2 px-2 rounded cursor-pointer"
+              >
+                Previous
               </button>
-            ))}
+            </div>
+            <div className="sm:flex hidden py-0">
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => setCurrentPage(number)}
+                  className={`${currentPage === number ? "text-indigo-700" : "text-gray-500"
+                    } inline-flex items-center px-4 py-1 text-sm font-semibold dark:bg-violet-400 dark:text-gray-900 hover:text-indigo-700 `}
+                >
+                  {number}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center py-2 px-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
+              <button
+                onClick={() =>
+                  setCurrentPage((prevPage) =>
+                    prevPage < totalPages ? prevPage + 1 : prevPage
+                  )
+                }
+                disabled={currentPage === totalPages}
+                className="text-gray-500 font-bold py-2 px-3 rounded cursor-pointer"
+              >
+                Next
+              </button>
+              <svg
+                width="14"
+                height="8"
+                viewBox="0 0 14 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.1665 4H12.8332"
+                  stroke="currentColor"
+                  stroke-width="1.55"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.5 7.33333L12.8333 4"
+                  stroke="currentColor"
+                  stroke-width="1.55"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.5 0.666687L12.8333 4.00002"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
           </div>
-
-          <button
-            onClick={() =>
-              setCurrentPage((prevPage) =>
-                prevPage < totalPages ? prevPage + 1 : prevPage
-              )
-            }
-            disabled={currentPage === totalPages}
-            className="text-gray-500 font-bold py-2 px-4 rounded cursor-pointer"
-          >
-            Next
-          </button>
         </div>
       </div>
+
+
       {/* ////////////////////////////////////////////////////////////////////////////// */}
 
-            {/* delete */}
-            {showDeletePopup && (
+      {/* delete */}
+      {showDeletePopup && (
         <DeletePopup
           studentId={selectedStudentId || ""}
           onClose={handleDeletePopupClose}
@@ -207,7 +271,6 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
         />
       )}
       {/* delete */}
-
 
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
