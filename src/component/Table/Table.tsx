@@ -20,11 +20,12 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const isTagsColumn = (column: string): column is keyof Student => {
     return column === "tags";
   };
+  ///////////////////////start of pagination //////////////////////////////
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -32,15 +33,22 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
 
   const totalPages = Math.ceil(students.length / itemsPerPage);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  /////////////////////////end of pagination////////////////////////////////////
 
+  // state to Manage whether the edit form is currently open or not.
   const [isEditing, setIsEditing] = useState(false);
+  // editData and setEditData: Store the data of the student being edited.
   const [editData, setEditData] = useState({
     id: "",
     name: "",
     email: "",
     phone: "",
   });
-
+  // showConfirmation and setShowConfirmation: Manage whether the delete confirmation dialog is displayed.
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  // studentToDelete and setStudentToDelete: Store the ID of the student to be deleted.
+  const [studentToDelete, setStudentToDelete] = useState("");
+  // handleEditClick: Opens the edit form for a selected student.
   const handleEditClick = (student: Student) => {
     setEditData({
       id: student.id,
@@ -50,37 +58,33 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
     });
     setIsEditing(true);
   };
-
+  // handleUpdate: Updates the student information after editing.
   const handleUpdate = () => {
     onUpdate(editData);
     setIsEditing(false);
     setEditData({ id: "", name: "", email: "", phone: "" });
+  };
+  // handleDeleteClick: Triggers the display of the delete confirmation dialog.
+  const handleDeleteClick = (studentId: string) => {
+    setStudentToDelete(studentId);
+    setShowConfirmation(true);
+  };
+  // This function is called when the "Yes" button is clicked in the delete confirmation dialog,
+  const handleDeleteConfirm = () => {
+    onDelete(studentToDelete);
+    setShowConfirmation(false);
+    setStudentToDelete("");
+  };
+  // This function is called when the "No" button is clicked in the delete confirmation dialog
+  const handleDeleteCancel = () => {
+    setShowConfirmation(false);
+    setStudentToDelete("");
   };
 
   // Exclude the "__typename" field from the columns
   const columns = Object.keys(students[0]).filter(
     (column) => column !== "__typename"
   ) as (keyof Student)[];
-
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
-    null
-  );
-
-  const handleDeleteClick = (studentId: string) => {
-    setSelectedStudentId(studentId);
-    setShowDeletePopup(true);
-  };
-
-  const handleDeletePopupClose = () => {
-    setSelectedStudentId(null);
-    setShowDeletePopup(false);
-  };
-
-  const handleDelete = () => {
-    handleDeletePopupClose();
-  };
-
   return (
     <>
       <div className=" overflow-x-auto">
@@ -108,6 +112,7 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                     key={column}
                     className="px-3 pt-0 pb-3 whitespace-nowrap text-gray-500"
                   >
+                     {/* // Check for "name" column and apply styles accordingly */}
                     {isTagsColumn(column) && Array.isArray(student[column]) ? (
                       <div>
                         {(student[column] as any)[0]
@@ -115,26 +120,28 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                           .map((tag: string, index: number) => (
                             <span
                               key={index}
-                              className={`${tag.trim() === "football"
+                              className={`${
+                                tag.trim() === "football"
                                   ? "bg-green-100 text-light-green-800 rounded-full px-2"
                                   : ""
-                                } ${tag.trim() === "supplay ch"
+                              } ${
+                                tag.trim() === "supplay ch"
                                   ? "bg-pink-100 text-light-pink-800 rounded-full px-2"
                                   : ""
-                                }`}
+                              }`}
                             >
                               {tag.trim()}
                             </span>
                           ))}
                       </div>
                     ) : // Check for "name" column and apply styles accordingly
-                      column === "name" ? (
-                        <span className="text-black font-semibold">
-                          {student[column]}
-                        </span>
-                      ) : (
-                        student[column]
-                      )}
+                    column === "name" ? (
+                      <span className="text-black font-semibold">
+                        {student[column]}
+                      </span>
+                    ) : (
+                      student[column]
+                    )}
                   </td>
                 ))}
                 <td className="px-4 pt-0 pb-2 whitespace-nowrap">
@@ -144,7 +151,6 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                   >
                     Edit
                   </button>
-
                   <button
                     onClick={() => handleDeleteClick(student.id)}
                     className="text-red-500 mr-2"
@@ -206,8 +212,9 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
                 <button
                   key={number}
                   onClick={() => setCurrentPage(number)}
-                  className={`${currentPage === number ? "text-indigo-700" : "text-gray-500"
-                    } inline-flex items-center px-4 py-1 text-sm font-semibold dark:bg-violet-400 dark:text-gray-900 hover:text-indigo-700 `}
+                  className={`${
+                    currentPage === number ? "text-indigo-700" : "text-gray-500"
+                  } inline-flex items-center px-4 py-1 text-sm font-semibold dark:bg-violet-400 dark:text-gray-900 hover:text-indigo-700 `}
                 >
                   {number}
                 </button>
@@ -259,18 +266,7 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
         </div>
       </div>
 
-
       {/* ////////////////////////////////////////////////////////////////////////////// */}
-
-      {/* delete */}
-      {showDeletePopup && (
-        <DeletePopup
-          studentId={selectedStudentId || ""}
-          onClose={handleDeletePopupClose}
-          onDelete={handleDelete}
-        />
-      )}
-      {/* delete */}
 
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -334,6 +330,32 @@ const Table: React.FC<TableProps> = ({ students, onDelete, onUpdate }) => {
             >
               Update
             </button>
+          </div>
+        </div>
+      )}
+
+      {showConfirmation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
+          <div className="bg-white p-8 rounded-lg z-10 max-w-md w-full">
+            <h2 className="text-2xl font-semibold mb-4">Confirm Deletion</h2>
+            <p className="mb-4">
+              Are you sure you want to delete this student?
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={handleDeleteConfirm}
+                className="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-700"
+              >
+                Yes
+              </button>
+              <button
+                onClick={handleDeleteCancel}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+              >
+                No
+              </button>
+            </div>
           </div>
         </div>
       )}
